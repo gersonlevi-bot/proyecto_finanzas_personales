@@ -8,10 +8,12 @@ export const db = knex(config[env])
 
 export async function checkConnection() {
     try {
-        const connection = await db
+        await db.raw('SELECT 1')
         console.log(`Data Base started on port ${process.env.DBPORT}`)
     } catch (error) {
         console.error('Error on connection', error)
+    } finally {
+        await db.destroy()
     }
 }
 
