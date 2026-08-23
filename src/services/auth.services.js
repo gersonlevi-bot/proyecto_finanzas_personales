@@ -1,5 +1,5 @@
 import { hash } from "bcrypt";
-import { searchByEmail, saveUser } from "../repositories/user.repository";
+import { searchByEmail, saveUser } from "../repositories/user.repository.js";
 
 export async function registerUser(datos) {
     const SALT_ROUNDS = 12
