@@ -12,8 +12,6 @@ export async function checkConnection() {
         console.log(`Data Base started on port ${process.env.DBPORT}`)
     } catch (error) {
         console.error('Error on connection', error)
-    } finally {
-        await db.destroy()
     }
 }
 
