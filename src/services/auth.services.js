@@ -1,5 +1,6 @@
 import { hash } from "bcrypt";
 import { searchByEmail, saveUser } from "../repositories/user.repository.js";
+import { errorApp } from "../utils/ErrorApp.js";
 
 export async function registerUser(datos) {
     const SALT_ROUNDS = 12;
@@ -10,27 +11,23 @@ export async function registerUser(datos) {
     const { name, last_name, email, password } = datos;
 
     if (!name || !last_name || !email || !password) {
-        const error = new Error("Todos los campos son obligatorios");
-        error.statusCode = 400;
-        throw error;
+        throw new errorApp("Todos los campos son obligatorios", 400);
     }
 
     if (!emailRegex.test(email)) {
-        const error = new Error("El formato del correo no es válido");
-        error.statusCode = 400;
-        throw error;
+        throw new errorApp("El formato del correo no es válido", 400);
     }
 
     if (!pwdRegex.test(password)) {
-        const error = new Error("La contraseña no cumple con los requisitos de seguridad",);
-        error.statusCode = 400;
+        throw new errorApp(
+            "La contraseña no cumple con los requisitos de seguridad",
+            400,
+        );
     }
 
     const foundUser = await searchByEmail(email);
     if (foundUser) {
-        const error = new Error("El correo electrónico ya está registrado");
-        error.statusCode = 400;
-        throw error;
+        throw new errorApp("El correo electrónico ya está registrado", 409);
     }
 
     const passwordHasheada = await hash(password, SALT_ROUNDS);
@@ -45,9 +42,10 @@ export async function registerUser(datos) {
         });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
-            const errorConflict = new Error("El correo electrónico ya fue registrado por otro proceso");
-            errorConflict.statusCode = 409;
-            throw errorConflict;
+            throw new errorApp(
+                "El correo electrónico ya fue registrado por otro proceso",
+                409,
+            );
         }
 
         console.error("Error en la inserción física:", error);

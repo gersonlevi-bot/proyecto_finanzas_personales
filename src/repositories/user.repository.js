@@ -5,13 +5,13 @@ export async function searchByEmail(email) {
     return user;
 }
 
-export async function saveUser({name, last_name, email, password_hash}) {
-    const [insertId] = await db('users').insert({
+export async function saveUser({ name, last_name, email, password_hash }) {
+    const [insertId] = await db("users").insert({
         name,
         last_name,
         email,
         password_hash
-    })
+    });
 
-    return insertId
+    return insertId;
 }
