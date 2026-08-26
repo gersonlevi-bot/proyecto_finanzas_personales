@@ -1,6 +1,12 @@
-import { hash } from "bcrypt";
-import { searchByEmail, saveUser } from "../repositories/user.repository.js";
+import { hash, compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
+import {
+    searchByEmail,
+    saveUser
+} from "../repositories/user.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
+import dotenv from "dotenv"
+dotenv.config()
 
 export async function registerUser(datos) {
     const SALT_ROUNDS = 12;
@@ -56,4 +62,29 @@ export async function registerUser(datos) {
         message: "Usuario registrado correctamente",
         id: id,
     };
+}
+
+export async function login(dataLogin) {
+    const { email, password } = dataLogin;
+
+    const user = searchByEmail(email);
+    if (!user) {throw ErrorApp("El usuario no existe", 400)}; 
+    // aqui tengo 2 forma de mensaje: el user no exite o email/pwd incorrectas
+    // ya no nesesito hacer otra funcion si esa ya me devuelve al user
+    // pero es nesesario hacer una validacion de email? si se supone que ya encontre el user es que ya existe
+
+    const isMatchPwd = await compare(password, user.password_hash);
+    if (!isMatchPwd) throw new ErrorApp("Correo o contraseña inválidos.", 401);
+
+    const token = sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+    )
+
+    return {
+        message: "Inicio de sesión exitoso.",
+        token,
+        user
+    }
 }
