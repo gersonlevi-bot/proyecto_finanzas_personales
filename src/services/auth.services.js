@@ -1,6 +1,6 @@
 import { hash } from "bcrypt";
 import { searchByEmail, saveUser } from "../repositories/user.repository.js";
-import { errorApp } from "../utils/ErrorApp.js";
+import { ErrorApp } from "../utils/ErrorApp.js";
 
 export async function registerUser(datos) {
     const SALT_ROUNDS = 12;
@@ -11,15 +11,15 @@ export async function registerUser(datos) {
     const { name, last_name, email, password } = datos;
 
     if (!name || !last_name || !email || !password) {
-        throw new errorApp("Todos los campos son obligatorios", 400);
+        throw new ErrorApp("Todos los campos son obligatorios", 400);
     }
 
     if (!emailRegex.test(email)) {
-        throw new errorApp("El formato del correo no es válido", 400);
+        throw new ErrorApp("El formato del correo no es válido", 400);
     }
 
     if (!pwdRegex.test(password)) {
-        throw new errorApp(
+        throw new ErrorApp(
             "La contraseña no cumple con los requisitos de seguridad",
             400,
         );
@@ -27,7 +27,7 @@ export async function registerUser(datos) {
 
     const foundUser = await searchByEmail(email);
     if (foundUser) {
-        throw new errorApp("El correo electrónico ya está registrado", 409);
+        throw new ErrorApp("El correo electrónico ya está registrado", 409);
     }
 
     const passwordHasheada = await hash(password, SALT_ROUNDS);
@@ -42,7 +42,7 @@ export async function registerUser(datos) {
         });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
-            throw new errorApp(
+            throw new ErrorApp(
                 "El correo electrónico ya fue registrado por otro proceso",
                 409,
             );

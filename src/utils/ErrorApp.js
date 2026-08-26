@@ -1,7 +1,7 @@
-export class errorApp extends Error {
-    constructor(msg, codigoStatus) {
+export class ErrorApp extends Error {
+    constructor(msg, statusCode) {
         super(msg);
-        this.codigoStatus = codigoStatus;
+        this.statusCode = statusCode;
         this.isOperational = true;
         Error.captureStackTrace(this, this.constructor);
     }
