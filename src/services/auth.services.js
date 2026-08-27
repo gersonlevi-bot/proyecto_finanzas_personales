@@ -1,12 +1,9 @@
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import {
-    searchByEmail,
-    saveUser
-} from "../repositories/user.repository.js";
+import { searchByEmail, saveUser } from "../repositories/user.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function registerUser(datos) {
     const SALT_ROUNDS = 12;
@@ -65,32 +62,36 @@ export async function registerUser(datos) {
 }
 
 export async function login(dataLogin) {
+    const dummyHash = "2b$12$dJYlUqbcG8ypyYZ8zLN5kO9UfEbq6/aJEXkHP9t8qUF24LuKA0hBK"
     const { email, password } = dataLogin;
 
     const user = await searchByEmail(email);
-    if (!user) {throw new ErrorApp("Correo o contraseña inválidos.", 401)}; 
+    if (!user) {
+        await compare(dummyHash, user.password_hash)
+        throw new ErrorApp("Correo o contraseña inválidos.", 401);
+    }
 
     const isMatchPwd = await compare(password, user.password_hash);
     if (!isMatchPwd) throw new ErrorApp("Correo o contraseña inválidos.", 401);
 
-    if(user.deleted_at !== null) {
+    if (user.deleted_at !== null) {
         return {
-            message: "Tu cuenta está en periodo de gracia, ¿quieres restablecerla?",
-            isDeactivated: true
-        }
+            message:"Tu cuenta está en periodo de gracia, ¿quieres restablecerla?",
+            isDeactivated: true,
+        };
     }
 
     const token = sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN }
-    )
+        { expiresIn: process.env.JWT_EXPIRES_IN },
+    );
 
     delete user.password_hash;
 
     return {
         message: "Inicio de sesión exitoso.",
         token,
-        user
-    }
+        user,
+    };
 }
