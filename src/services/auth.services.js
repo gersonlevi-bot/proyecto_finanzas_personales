@@ -67,7 +67,7 @@ export async function login(dataLogin) {
 
     const user = await searchByEmail(email);
     if (!user) {
-        await compare(dummyHash, user.password_hash)
+        await compare(password ,dummyHash)
         throw new ErrorApp("Correo o contraseña inválidos.", 401);
     }
 
