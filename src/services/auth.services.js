@@ -1,5 +1,5 @@
 import { hash, compare } from "bcrypt";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { searchByEmail, saveUser } from "../repositories/user.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import dotenv from "dotenv";
@@ -61,7 +61,7 @@ export async function registerUser(datos) {
     };
 }
 
-export async function login(dataLogin) {
+export async function loginServices(dataLogin) {
     const dummyHash = "2b$12$dJYlUqbcG8ypyYZ8zLN5kO9UfEbq6/aJEXkHP9t8qUF24LuKA0hBK"
     const { email, password } = dataLogin;
 
@@ -81,7 +81,7 @@ export async function login(dataLogin) {
         };
     }
 
-    const token = sign(
+    const token = jwt.sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN },
