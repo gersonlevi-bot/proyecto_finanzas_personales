@@ -67,20 +67,26 @@ export async function registerUser(datos) {
 export async function login(dataLogin) {
     const { email, password } = dataLogin;
 
-    const user = searchByEmail(email);
-    if (!user) {throw ErrorApp("El usuario no existe", 400)}; 
-    // aqui tengo 2 forma de mensaje: el user no exite o email/pwd incorrectas
-    // ya no nesesito hacer otra funcion si esa ya me devuelve al user
-    // pero es nesesario hacer una validacion de email? si se supone que ya encontre el user es que ya existe
+    const user = await searchByEmail(email);
+    if (!user) {throw new ErrorApp("Correo o contraseña inválidos.", 401)}; 
 
     const isMatchPwd = await compare(password, user.password_hash);
     if (!isMatchPwd) throw new ErrorApp("Correo o contraseña inválidos.", 401);
+
+    if(user.deleted_at !== null) {
+        return {
+            message: "Tu cuenta está en periodo de gracia, ¿quieres restablecerla?",
+            isDeactivated: true
+        }
+    }
 
     const token = sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
     )
+
+    delete user.password_hash;
 
     return {
         message: "Inicio de sesión exitoso.",
