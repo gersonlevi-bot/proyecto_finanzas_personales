@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import router from "../src/routes/index.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
