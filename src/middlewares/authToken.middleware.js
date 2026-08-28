@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export function authToken(req, res, next) {
-    const token = req.headers.authorization?.slice(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) throw new ErrorApp("Acceso denegado. No proporciono el token", 401);
 
     try {
