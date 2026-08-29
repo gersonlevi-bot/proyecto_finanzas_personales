@@ -1,4 +1,4 @@
-import { saveAccount } from "../repositories/account.repository.js";
+import { saveAccount, getAccountsByUser } from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 
 export async function createAccountServices(dataAccount, userId) {
@@ -21,3 +21,8 @@ export async function createAccountServices(dataAccount, userId) {
         idAccount
     };
 }
+
+export async function getAccountsServices(userId) {
+    const accounts = await getAccountsByUser(userId); 
+    return {accounts};
+};
