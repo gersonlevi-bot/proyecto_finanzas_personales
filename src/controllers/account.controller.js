@@ -1,6 +1,7 @@
 import { createAccountServices } from "../services/account.services.js";
 
 export const createAccount = async (req, res) => {
-    const result = await createAccountServices(req.body);
+    const userId = req.user.id
+    const result = await createAccountServices(req.body, userId);
     res.status(201).json(result);
 };
