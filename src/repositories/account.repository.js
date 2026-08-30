@@ -19,3 +19,22 @@ export async function getAccountsByUser(userId) {
 
     return rows;
 }
+
+export async function getAccountById(accountId, userId) {
+    const row = await db("accounts")
+        .where("id", accountId)
+        .where("user_id", userId)
+        .whereNull("deleted_at")
+        .first();
+    
+    return row;
+};
+
+export async function updateAccount(accountId, userId, data) {
+    const rowAffected = await db("accounts")
+        .where("id", accountId)
+        .where("user_id", userId)
+        .update(data)
+
+    return rowAffected
+}

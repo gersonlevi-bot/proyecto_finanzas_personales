@@ -1,14 +1,12 @@
-import { saveAccount, getAccountsByUser } from "../repositories/account.repository.js";
+import { saveAccount, getAccountsByUser, getAccountById, updateAccount } from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
+import { validateTypeAccount, validateDescription } from "../utils/accountValidators.js";
 
 export async function createAccountServices(dataAccount, userId) {
-    const type = ["yape", "cash", "bank"];
     const { type_account, description } = dataAccount;
 
-    if (!type.includes(type_account)) throw new ErrorApp("Opcion no valida en tipo de cuenta", 400);
-    if (description) {
-        if (description.length > 255) throw new ErrorApp("El tamaño de la descripción excede el limite de caracteres permitidos",400);
-    }
+    validateTypeAccount(type_account);
+    validateDescription(description);
 
     const idAccount = await saveAccount({
         type_account,
@@ -25,4 +23,37 @@ export async function createAccountServices(dataAccount, userId) {
 export async function getAccountsServices(userId) {
     const accounts = await getAccountsByUser(userId); 
     return {accounts};
+};
+
+export async function getAccountByIdServices(accountId, userId) {
+    const account = await getAccountById(accountId, userId);
+    if(!account) throw new ErrorApp("La cuenta no existe", 404);
+
+    return account;
+};
+
+export async function updateAccountServices(accountId, userId, updateData) {
+    const { type_account, description } = updateData;
+    validateTypeAccount(type_account);
+    validateDescription(description);
+
+    const isAccountExisting = await getAccountById(accountId, userId)
+    if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
+    
+    const account = await updateAccount(accountId, userId, {
+        type_account,
+        description,
+        updated_at: new Date()
+    });
+    if(account === 0){
+        return { 
+            message: "No se realizaron cambios (los datos ingresados son idénticos)", 
+            changesApplied: false 
+        }
+    }
+    
+    return {
+        message: "Cuenta actualizada con exito", 
+        changesApplied: true
+    }
 };
