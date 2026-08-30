@@ -1,4 +1,4 @@
-import { saveAccount, getAccountsByUser, getAccountById, updateAccount } from "../repositories/account.repository.js";
+import { saveAccount, getAccountsByUser, getAccountById, updateAccountById } from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { validateTypeAccount, validateDescription } from "../utils/accountValidators.js";
 
@@ -40,7 +40,7 @@ export async function updateAccountServices(accountId, userId, updateData) {
     const isAccountExisting = await getAccountById(accountId, userId)
     if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
     
-    const account = await updateAccount(accountId, userId, {
+    const account = await updateAccountById(accountId, userId, {
         type_account,
         description,
         updated_at: new Date()

@@ -30,11 +30,14 @@ export async function getAccountById(accountId, userId) {
     return row;
 };
 
-export async function updateAccount(accountId, userId, data) {
+export async function updateAccountById(accountId, userId, { type_account, description, updated_at }) {
     const rowAffected = await db("accounts")
         .where("id", accountId)
         .where("user_id", userId)
-        .update(data)
+        .update({ type_account, 
+            description, 
+            updated_at 
+        })
 
     return rowAffected
 }

@@ -1,3 +1,5 @@
+import { ErrorApp } from "./ErrorApp.js";
+
 export function validateTypeAccount(type_account) {
     const type = ["yape", "cash", "bank"];
     if (!type.includes(type_account))

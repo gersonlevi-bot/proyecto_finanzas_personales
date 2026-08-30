@@ -8,7 +8,7 @@ router.use(authToken);
 
 router.post("/", createAccount);
 router.get("/", getAccounts); 
-router.get("/", getAccount); 
-router.post("/", updateAccount);
+router.get("/:id", getAccount); 
+router.put("/:id", updateAccount);
 
 export default router;

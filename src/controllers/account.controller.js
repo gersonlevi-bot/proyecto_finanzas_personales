@@ -13,14 +13,14 @@ export const getAccounts = async (req, res) => {
 };
 
 export const getAccount = async (req, res) => {
-    const accountId = req.params;
+    const accountId = req.params.id;
     const userId = req.user.id;
     const result = await getAccountByIdServices(accountId, userId);
     res.status(200).json(result)
 };
 
 export const updateAccount = async (req, res) => {
-    const accountId = req.params;
+    const accountId = req.params.id;
     const userId = req.user.id;
     const result = await updateAccountServices(accountId, userId, req.body);
     res.status(200).json(result)
