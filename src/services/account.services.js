@@ -42,8 +42,7 @@ export async function updateAccountServices(accountId, userId, updateData) {
     
     const account = await updateAccountById(accountId, userId, {
         type_account,
-        description,
-        updated_at: new Date()
+        description
     });
     if(account === 0){
         return { 
