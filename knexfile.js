@@ -10,6 +10,7 @@ const baseConnection = {
     user: process.env.DBUSERNAME,
     password: process.env.DBPASSWORD,
     database: process.env.DBNAME,
+    flags: '-FOUND_ROWS'
 };
 
 export default {

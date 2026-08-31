@@ -1,4 +1,4 @@
-import { saveAccount, getAccountsByUser, getAccountById, updateAccountById } from "../repositories/account.repository.js";
+import { saveAccount, getAccountsByUser, getAccountById, updateAccountById, deleteAccountById } from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { validateTypeAccount, validateDescription } from "../utils/accountValidators.js";
 
@@ -55,4 +55,14 @@ export async function updateAccountServices(accountId, userId, updateData) {
         message: "Cuenta actualizada con exito", 
         changesApplied: true
     }
+};
+
+export async function deleteAccountServices(accountId, userId) {
+    const isAccountExisting = await getAccountById(accountId, userId);
+    if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
+    
+    const accountDeleted =  await deleteAccountById(accountId, userId);
+    if(accountDeleted === 0)  throw new ErrorApp("La cuenta no existe", 404);
+    
+    return { message: "Cuenta dada de baja correctamente." };
 };

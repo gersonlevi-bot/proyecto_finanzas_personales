@@ -41,3 +41,14 @@ export async function updateAccountById(accountId, userId, { type_account, descr
 
     return rowAffected;
 };
+
+export async function deleteAccountById(accountId, userId) {
+    const rowAffected = await db("accounts")
+        .where("id", accountId)
+        .where("user_id", userId)
+        .update({deleted_at: db.fn.now()});
+
+    return rowAffected;
+} ;
+
+
