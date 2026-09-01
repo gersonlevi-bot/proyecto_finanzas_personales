@@ -1,6 +1,7 @@
 import {saveCategory,findCategoryByNameAndUser,} from "../repositories/category.repository.js";
-import { ErrorApp } from "../helpers/error.js";
+import { ErrorApp } from "../utils/ErrorApp.js";
 import { validateTypeCategory } from "../utils/categoryValidators.js";
+import { validateDescription } from "../utils/accountValidators.js";
 
 export async function createCategoryServices(dataCategory, userId) {
     const { name, description, type_category } = dataCategory;

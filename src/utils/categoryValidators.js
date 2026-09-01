@@ -1,4 +1,4 @@
-import { ErrorApp } from "../helpers/error.js";
+import { ErrorApp } from "./ErrorApp.js";
 
 export function validateTypeCategory(type_category) {
     const type = ["income", "expense"];

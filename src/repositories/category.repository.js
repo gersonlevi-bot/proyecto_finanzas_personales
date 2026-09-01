@@ -1,4 +1,4 @@
-import { db } from "../database/db.js";
+import { db } from "../config/db.js";
 
 export async function findCategoryByNameAndUser(nameCategory, userId) {
     const row = await db("categories")
