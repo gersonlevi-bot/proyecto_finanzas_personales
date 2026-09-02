@@ -43,7 +43,7 @@ export async function getCategoriesSevices(userId) {
     return { categories };
 };
 
-export async function getCategoryByIdSaervices(categoryId, userId) {
+export async function getCategoryByIdServices(categoryId, userId) {
     const category = await getCategoryById(categoryId, userId);
     if(!category) throw new ErrorApp("La categoría no existe.", 404);
     
@@ -57,10 +57,14 @@ export async function updateCategoryByIdServices(categoryId, userId, dataCategor
     validateTypeCategory(type_category);
     validateDescription(description);
     
-    const foundCategory = await findCategoryByNameAndUser(name, userId);
+    const foundCategory = await getCategoryById(categoryId, userId);
     if(!foundCategory) throw new ErrorApp("La categoría no existe.", 404);
 
-    const category = await updateCategoryById(categoryId, userId);
+    const category = await updateCategoryById(categoryId, userId, { 
+        name, 
+        description, 
+        type_category 
+    });
     if(category === 0) {
         return { 
             message: "No se realizaron cambios (los datos ingresados son idénticos).", 

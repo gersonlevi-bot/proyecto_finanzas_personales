@@ -21,7 +21,7 @@ export async function saveCategory({name,description,type_category,user_id}) {
 };
 
 export async function getCategoriesByUser(userId) {
-    const dataRequired = ["name", "description", "type_category", "created_at"];
+    const dataRequired = ["id", "name", "description", "type_category", "created_at"];
     const rows = await db("categories")
         .select(dataRequired)
         .where("user_id", userId)

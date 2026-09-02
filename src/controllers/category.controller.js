@@ -7,9 +7,8 @@ export const createCategory = async (req, res) => {
 };
 
 export const getCategories = async (req, res) => {
-    const categoryId = req.params.id;
     const userId = req.user.id;
-    const result = await getCategoriesSevices(categoryId, userId);
+    const result = await getCategoriesSevices(userId);
     res.status(200).json(result);
 };
 
