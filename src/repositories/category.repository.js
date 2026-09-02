@@ -31,7 +31,9 @@ export async function getCategoriesByUser(userId) {
 };
 
 export async function getCategoryById(categoryId, userId) {
+    const dataRequired = ["id", "name", "description", "type_category", "created_at", "updated_at"];
     const row = await db("categories")
+        .select(dataRequired)
         .where("id", categoryId)
         .where("user_id", userId)
         .whereNull("deleted_at")

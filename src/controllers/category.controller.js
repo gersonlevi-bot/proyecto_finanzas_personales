@@ -1,4 +1,4 @@
-import { createCategoryServices, getCategoriesSevices, getCategoryByIdSaervices, updateCategoryByIdServices, deletedCategoryByIdServices } from "../services/category.services.js";
+import { createCategoryServices, getCategoriesSevices, getCategoryByIdServices, updateCategoryByIdServices, deletedCategoryByIdServices } from "../services/category.services.js";
 
 export const createCategory = async (req, res) => {
     const userId = req.user.id;
@@ -15,7 +15,7 @@ export const getCategories = async (req, res) => {
 export const getCategory = async (req, res) => {
     const categoryId = req.params.id;
     const userId = req.user.id;
-    const result = await getCategoryByIdSaervices(categoryId, userId);
+    const result = await getCategoryByIdServices(categoryId, userId);
     res.status(200).json(result);
 };
 

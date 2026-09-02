@@ -21,7 +21,9 @@ export async function getAccountsByUser(userId) {
 }
 
 export async function getAccountById(accountId, userId) {
+    const dataRequired = ["id", "description", "type_account", "created_at", "updated_at"];
     const row = await db("accounts")
+        .select(dataRequired)
         .where("id", accountId)
         .where("user_id", userId)
         .whereNull("deleted_at")
