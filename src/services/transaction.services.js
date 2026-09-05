@@ -8,10 +8,10 @@ import { getCategoryByIdServices } from "./category.services.js";
 export async function createTransactionServices(dataTransaction, userId) {
     const { amount, type, description, account_id, category_id } = dataTransaction;
 
-    if(!amount || !type || !account_id || !category_id)
+    if(!type || !account_id || !category_id)
         throw new ErrorApp("Los campos son obligatorios (la descripcion es opcional)", 400);
 
-    if(type(amount) !== Number || amount < 0) 
+    if(typeof amount !== "number" || amount <= 0) 
         throw new ErrorApp("El monto debe ser de tipo número y mayor que 0", 400);
     
     validateTypeTransaction(type);
@@ -35,7 +35,7 @@ export async function createTransactionServices(dataTransaction, userId) {
     };
 };
 
-export async function getTransationsServices(userId) {
+export async function getTransactionsServices(userId) {
     const transactions = await getTransactionsByUser(userId);
     return { transactions };
 };

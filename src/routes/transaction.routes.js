@@ -10,4 +10,4 @@ router.post("/", createTransaction);
 router.get("/", getTransactions);
 router.get("/:id", getTransaction);
 
-export default router();
+export default router;
