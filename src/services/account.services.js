@@ -72,7 +72,9 @@ export async function getAccountBalanceServices(accountId, userId) {
     const account = await getAccountByIdServices(accountId, userId);
 
     const balance = await getAccountBalance(accountId, userId);
-    const balanceNeto = balance.total_income - balance.total_expense;
+    const income = parseFloat(balance.total_income);
+    const expense = parseFloat(balance.total_expense)
+    const balanceNeto =  (income - expense).toFixed(2);
 
     return {
         account,
