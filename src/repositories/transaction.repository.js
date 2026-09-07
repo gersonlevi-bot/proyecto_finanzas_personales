@@ -40,7 +40,7 @@ export async function getAccountBalance(accountId, userId) {
             db.raw("COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS total_income"),
             db.raw("COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS total_expense")
         )
-        .where("id", accountId)
+        .where("account_id", accountId)
         .where("user_id", userId)
         .first();
 
