@@ -33,3 +33,16 @@ export async function getTransactionById(transactionId, userId) {
 
     return row;
 };
+
+export async function getAccountBalance(accountId, userId) {
+    const balance = await db("transactions")
+        .select(
+            db.raw("COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS total_income"),
+            db.raw("COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS total_expense")
+        )
+        .where("id", accountId)
+        .where("user_id", userId)
+        .first();
+
+    return balance;
+};

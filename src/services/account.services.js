@@ -1,6 +1,7 @@
 import { saveAccount, getAccountsByUser, getAccountById, updateAccountById, deleteAccountById } from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { validateTypeAccount, validateDescription } from "../utils/accountValidators.js";
+import { getAccountBalance } from "../repositories/transaction.repository.js";
 
 export async function createAccountServices(dataAccount, userId) {
     const { type_account, description } = dataAccount;
@@ -65,4 +66,16 @@ export async function deleteAccountServices(accountId, userId) {
     if(accountDeleted === 0)  throw new ErrorApp("La cuenta no existe", 404);
     
     return { message: "Cuenta dada de baja correctamente." };
+};
+
+export async function getAccountBalanceServices(accountId, userId) {
+    const account = getAccountByIdServices(accountId, userId);
+
+    const balance = await getAccountBalance(accountId, userId);
+    const balanceNeto = balance.total_income - balance.total_expense;
+
+    return {
+        account,
+        balance: balanceNeto
+    };
 };
