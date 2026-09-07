@@ -69,7 +69,7 @@ export async function deleteAccountServices(accountId, userId) {
 };
 
 export async function getAccountBalanceServices(accountId, userId) {
-    const account = getAccountByIdServices(accountId, userId);
+    const account = await getAccountByIdServices(accountId, userId);
 
     const balance = await getAccountBalance(accountId, userId);
     const balanceNeto = balance.total_income - balance.total_expense;
