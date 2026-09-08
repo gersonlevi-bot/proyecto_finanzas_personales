@@ -9,7 +9,7 @@ router.use(authToken);
 router.post("/", createAccount);
 router.get("/", getAccounts); 
 router.get("/:id", getAccount); 
-router.get("/:id/balance", getAccountBalance);
+router.get("/:id/balance", getBalance);
 router.put("/:id", updateAccount);
 router.delete("/:id", deletedAccount);
 

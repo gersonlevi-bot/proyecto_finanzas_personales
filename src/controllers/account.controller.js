@@ -33,7 +33,7 @@ export const deletedAccount = async (req, res) => {
     res.status(200).json(result);
 };
 
-export const getAccountBalance = async (req, res) => {
+export const getBalance = async (req, res) => {
     const accountId = req.params.id;
     const userId = req.user.id;
     const result = await getAccountBalanceServices(accountId, userId);
