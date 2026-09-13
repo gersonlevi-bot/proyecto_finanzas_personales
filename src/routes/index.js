@@ -3,6 +3,7 @@ import authRoutes from "./auth.routes.js";
 import accountRoutes from "./account.routes.js";
 import categoryRoutes from "./category.routes.js";
 import transactionRoutes from "./transaction.routes.js"
+import budgetRoutes from "./budget.routes.js";
 
 const router = Router();
 
@@ -10,5 +11,6 @@ router.use("/auth", authRoutes);
 router.use("/cuenta", accountRoutes);
 router.use("/categoria", categoryRoutes);
 router.use("/transaccion", transactionRoutes);
+router.use("presupuesto", budgetRoutes);
 
 export default router;
