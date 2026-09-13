@@ -26,7 +26,7 @@ export async function createBudgetServices(dataBudget, userId) {
             trx
         );
 
-        if(budgetExists) throw new ErrorApp("EL presupuesto ya existe en ese rango de fechas.", 409);
+        if(budgetExists) throw new ErrorApp("El presupuesto ya existe en ese rango de fechas.", 409);
 
         let budget;
         try {

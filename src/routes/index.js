@@ -11,6 +11,6 @@ router.use("/auth", authRoutes);
 router.use("/cuenta", accountRoutes);
 router.use("/categoria", categoryRoutes);
 router.use("/transaccion", transactionRoutes);
-router.use("presupuesto", budgetRoutes);
+router.use("/presupuesto", budgetRoutes);
 
 export default router;
