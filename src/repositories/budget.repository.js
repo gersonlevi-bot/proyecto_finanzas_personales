@@ -22,3 +22,30 @@ export async function saveBudget({ amount, time_start, time_end, user_id, catego
 
     return insert_id;
 };
+
+export async function getActiveBudgets(userId, currentDay) {
+    const dataRequired = ["id", "amount", "time_start", "time_end", "created_at", "updated_at", "category_id"]
+
+    const totalSpentByCategory = db("transactions")
+                .select(
+                    db.raw("COALESCE(SUM(??), 0)", ["amount"])
+                )
+                .whereColumn("transactions.category_id", "budgets.category_id")
+                .whereColumn("transactions.user_id", "budgets.user_id")
+                .where("transactions.type", "=", "expense")
+                .whereColumn("transactions.created_at", ">=", "budgets.time_start")
+                .whereRaw("transactions.created_at < DATE_ADD(budgets.time_end, INTERVAL 1 DAY)")
+                .as("totalSpentByCategory")
+
+    const rows = await db("budgets")
+        .select(
+            dataRequired, 
+            totalSpentByCategory
+        )
+        .where("budgets.user_id", userId)
+        .whereNull("budgets.deleted_at")
+        .where("budgets.time_start", "<=", currentDay)
+        .whereRaw("?, DATE_ADD(budgets.time_end, INTERVAL 1 DAY)", [currentDay]);
+
+    return rows;
+};
