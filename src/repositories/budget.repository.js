@@ -1,3 +1,4 @@
+import { raw } from "express";
 import { db } from "../config/db.js";
 
 export async function findBudgetInDateRange(time_start, time_end, user_id, category_id, connection) {
@@ -45,4 +46,17 @@ export async function getActiveBudgets(userId, currentDay) {
         .whereRaw("? < DATE_ADD(budgets.time_end, INTERVAL 1 DAY)", [currentDay]);
 
     return rows;
+};
+
+export async function getBudgetById(BudgetId, userId) {
+    const dataRequired = ["id", "amount", "time_start", "time_end", "created_at", "updated_at", "category_id"]
+
+    const row = await db("budgets")
+            .select([...dataRequired, totalSpentByCategory()])
+            .where("id", BudgetId)
+            .where("user_id", userId)
+            .whereNull("deleted_at")
+            .first()
+
+    return row;
 };
