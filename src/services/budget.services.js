@@ -1,5 +1,5 @@
 import { db } from "../config/db.js";
-import { findBudgetInDateRange, saveBudget } from "../repositories/budget.repository.js";
+import { findBudgetInDateRange, saveBudget, getActiveBudgets, getBudgetById } from "../repositories/budget.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { getCategoryByIdServices } from "./category.services.js";
 
@@ -79,3 +79,17 @@ export async function createBudgetServices(dataBudget, userId) {
         idBudget
     };  
 };
+
+export async function getActiveBudgetsServices(userId) {
+    const currentDay = new Date();
+    const budgets = await getActiveBudgets(userId, currentDay);
+    
+    return { budgets };
+};
+
+export async function getBudgetByIdServices(budgetId, userId) {
+    const budget = await getBudgetById(budgetId, userId);
+    if (!budget) throw new ErrorApp("El presupuesto no existe", 400);
+    
+    return budget;
+}
