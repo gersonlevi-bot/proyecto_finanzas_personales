@@ -89,7 +89,7 @@ export async function getActiveBudgetsServices(userId) {
 
 export async function getBudgetByIdServices(budgetId, userId) {
     const budget = await getBudgetById(budgetId, userId);
-    if (!budget) throw new ErrorApp("El presupuesto no existe", 400);
+    if (!budget) throw new ErrorApp("El presupuesto no existe", 404);
     
     return budget;
 }
