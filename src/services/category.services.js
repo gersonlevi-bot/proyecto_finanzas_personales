@@ -60,12 +60,12 @@ export async function updateCategoryByIdServices(categoryId, userId, dataCategor
     const foundCategory = await getCategoryById(categoryId, userId);
     if(!foundCategory) throw new ErrorApp("La categoría no existe.", 404);
 
-    const category = await updateCategoryById(categoryId, userId, { 
+    const affectedRows = await updateCategoryById(categoryId, userId, { 
         name, 
         description, 
         type_category 
     });
-    if(category === 0) {
+    if(affectedRows === 0) {
         return { 
             message: "No se realizaron cambios (los datos ingresados son idénticos).", 
             changesApplied: false 
@@ -82,8 +82,8 @@ export async function deletedCategoryByIdServices(categoryId, userId) {
     const isCategoryExisting = await getCategoryById(categoryId, userId);
     if(!isCategoryExisting) throw new ErrorApp("La categoría no existe.", 404);
 
-    const categoryDeleted = await deletedCategory(categoryId, userId);
-    if(categoryDeleted === 0)  throw new ErrorApp("La categoría no existe.", 404);
+    const affectedRows = await deletedCategory(categoryId, userId);
+    if(affectedRows === 0)  throw new ErrorApp("La categoría no existe.", 404);
     
     return { message: "Categoría dada de baja correctamente." };
 };

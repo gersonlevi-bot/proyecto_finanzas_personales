@@ -43,7 +43,7 @@ export async function getCategoryById(categoryId, userId) {
 };
 
 export async function updateCategoryById(categoryId, userId, { name, description, type_category }) {
-    const rowAffected = await db("categories")
+    const affectedRow = await db("categories")
         .where("id", categoryId)
         .where("user_id", userId)
         .update({
@@ -52,14 +52,14 @@ export async function updateCategoryById(categoryId, userId, { name, description
             type_category
         });
 
-    return rowAffected;
+    return affectedRow;
 };
 
 export async function deletedCategory(categoryId, userId) {
-    const rowAffected = await db("categories")
+    const affectedRow = await db("categories")
         .where("id", categoryId)
         .where("user_id", userId)
         .update({ deleted_at: db.fn.now() });
 
-    return rowAffected;
+    return affectedRow;
 };

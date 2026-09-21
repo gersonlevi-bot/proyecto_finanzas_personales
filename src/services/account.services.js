@@ -41,11 +41,11 @@ export async function updateAccountServices(accountId, userId, updateData) {
     const isAccountExisting = await getAccountById(accountId, userId)
     if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
     
-    const account = await updateAccountById(accountId, userId, {
+    const affectedRows = await updateAccountById(accountId, userId, {
         type_account,
         description
     });
-    if(account === 0){
+    if(affectedRows === 0){
         return { 
             message: "No se realizaron cambios (los datos ingresados son idénticos)", 
             changesApplied: false 
@@ -62,8 +62,8 @@ export async function deleteAccountServices(accountId, userId) {
     const isAccountExisting = await getAccountById(accountId, userId);
     if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
     
-    const accountDeleted =  await deleteAccountById(accountId, userId);
-    if(accountDeleted === 0)  throw new ErrorApp("La cuenta no existe", 404);
+    const affectedRows =  await deleteAccountById(accountId, userId);
+    if(affectedRows === 0)  throw new ErrorApp("La cuenta no existe", 404);
     
     return { message: "Cuenta dada de baja correctamente." };
 };
