@@ -1,14 +1,16 @@
 import { db } from "../config/db.js";
 
-export async function findBudgetInDateRange(time_start, time_end, user_id, category_id, connection) {
-    return await connection("budgets")
+export async function findBudgetInDateRange(searchedStartTime, searchedEndTime, user_id, category_id, connection, idBudget) {
+    const query = connection("budgets")
         .where("user_id", user_id)
         .where("category_id", category_id)
-        .where("time_start", "<=", time_end)   
-        .where("time_end", ">=", time_start)
-        .whereNull("deleted_at")
-        .forUpdate()
-        .first();
+        .where("time_start", "<=", searchedEndTime)   
+        .where("time_end", ">=", searchedStartTime)
+        .whereNull("deleted_at");
+
+    if(idBudget) query.where("id","!=" ,idBudget);
+
+    return await query.forUpdate().first();
 };
 
 export async function saveBudget({ amount, time_start, time_end, user_id, category_id }, connection) {
@@ -58,4 +60,18 @@ export async function getBudgetById(BudgetId, userId) {
             .first()
 
     return row;
+};
+
+export async function updateBudgetById(userId, { amount, time_start, time_end, category_id }, connection, budgetId) {
+    const affectedRow = await connection("budgets")
+            .where("id", budgetId)
+            .where("user_id", userId)
+            .update({
+                amount, 
+                time_start, 
+                time_end, 
+                category_id
+            });
+    
+    return affectedRow;
 };
