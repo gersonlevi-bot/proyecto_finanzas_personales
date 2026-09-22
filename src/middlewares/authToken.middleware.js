@@ -5,8 +5,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export function authToken(req, res, next) {
-    const tokenHeader = req.headers.authorization
-    if (!tokenHeader || !tokenHeader.startsWith("Bearer ")) throw new ErrorApp("Acceso denegado. No proporciono el token", 401);
+    const tokenHeader = req.headers.authorization;
+    if (!tokenHeader || !tokenHeader.startsWith("Bearer "))
+        throw new ErrorApp("Acceso denegado. No proporciono el token", 401);
 
     const token = tokenHeader.split(" ")[1];
 
@@ -16,7 +17,7 @@ export function authToken(req, res, next) {
         req.user = user;
 
         next();
-    } catch (error) {
+    } catch {
         throw new ErrorApp("Token invalido o expirado", 401);
     }
 }

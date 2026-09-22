@@ -7,18 +7,18 @@ export async function findCategoryByNameAndUser(nameCategory, userId) {
         .whereNull("deleted_at")
         .first();
     return row;
-};
+}
 
-export async function saveCategory({name,description,type_category,user_id}) {
+export async function saveCategory({ name, description, type_category, user_id }) {
     const [insertId] = await db("categories").insert({
         name,
         description,
         type_category,
         user_id
     });
-    
+
     return insertId;
-};
+}
 
 export async function getCategoriesByUser(userId) {
     const dataRequired = ["id", "name", "description", "type_category", "created_at"];
@@ -26,9 +26,9 @@ export async function getCategoriesByUser(userId) {
         .select(dataRequired)
         .where("user_id", userId)
         .whereNull("deleted_at");
-    
+
     return rows;
-};
+}
 
 export async function getCategoryById(categoryId, userId) {
     const dataRequired = ["id", "name", "description", "type_category", "created_at", "updated_at"];
@@ -40,7 +40,7 @@ export async function getCategoryById(categoryId, userId) {
         .first();
 
     return row;
-};
+}
 
 export async function updateCategoryById(categoryId, userId, { name, description, type_category }) {
     const affectedRow = await db("categories")
@@ -53,7 +53,7 @@ export async function updateCategoryById(categoryId, userId, { name, description
         });
 
     return affectedRow;
-};
+}
 
 export async function deletedCategory(categoryId, userId) {
     const affectedRow = await db("categories")
@@ -62,4 +62,4 @@ export async function deletedCategory(categoryId, userId) {
         .update({ deleted_at: db.fn.now() });
 
     return affectedRow;
-};
+}

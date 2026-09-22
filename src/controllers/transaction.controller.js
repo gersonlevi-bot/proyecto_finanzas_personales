@@ -1,4 +1,8 @@
-import { createTransactionServices, getTransactionsServices, getTransactionServices } from "../services/transaction.services.js";
+import {
+    createTransactionServices,
+    getTransactionsServices,
+    getTransactionServices
+} from "../services/transaction.services.js";
 
 export const createTransaction = async (req, res) => {
     const userId = req.user.id;
@@ -9,12 +13,12 @@ export const createTransaction = async (req, res) => {
 export const getTransactions = async (req, res) => {
     const userId = req.user.id;
     const result = await getTransactionsServices(userId);
-    res.status(200).json(result)
+    res.status(200).json(result);
 };
 
 export const getTransaction = async (req, res) => {
     const transactionId = req.params.id;
     const userId = req.user.id;
-    const result = await getTransactionServices(transactionId ,userId);
-    res.status(200).json(result)
+    const result = await getTransactionServices(transactionId, userId);
+    res.status(200).json(result);
 };

@@ -1,9 +1,14 @@
-import { createBudgetServices, getActiveBudgetsServices, getBudgetByIdServices, updateBudgetServices } from "../services/budget.services.js";
+import {
+    createBudgetServices,
+    getActiveBudgetsServices,
+    getBudgetByIdServices,
+    updateBudgetServices
+} from "../services/budget.services.js";
 
 export const createBudget = async (req, res) => {
     const userId = req.user.id;
     const result = await createBudgetServices(req.body, userId);
-    res.status(201).json(result)
+    res.status(201).json(result);
 };
 
 export const getBudgets = async (req, res) => {

@@ -1,4 +1,10 @@
-import { createCategoryServices, getCategoriesSevices, getCategoryByIdServices, updateCategoryByIdServices, deletedCategoryByIdServices } from "../services/category.services.js";
+import {
+    createCategoryServices,
+    getCategoriesSevices,
+    getCategoryByIdServices,
+    updateCategoryByIdServices,
+    deletedCategoryByIdServices
+} from "../services/category.services.js";
 
 export const createCategory = async (req, res) => {
     const userId = req.user.id;

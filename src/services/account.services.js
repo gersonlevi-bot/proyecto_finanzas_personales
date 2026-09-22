@@ -1,4 +1,10 @@
-import { saveAccount, getAccountsByUser, getAccountById, updateAccountById, deleteAccountById } from "../repositories/account.repository.js";
+import {
+    saveAccount,
+    getAccountsByUser,
+    getAccountById,
+    updateAccountById,
+    deleteAccountById
+} from "../repositories/account.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { validateTypeAccount, validateDescription } from "../utils/accountValidators.js";
 import { getAccountBalance } from "../repositories/transaction.repository.js";
@@ -22,51 +28,51 @@ export async function createAccountServices(dataAccount, userId) {
 }
 
 export async function getAccountsServices(userId) {
-    const accounts = await getAccountsByUser(userId); 
-    return {accounts};
-};
+    const accounts = await getAccountsByUser(userId);
+    return { accounts };
+}
 
 export async function getAccountByIdServices(accountId, userId) {
     const account = await getAccountById(accountId, userId);
-    if(!account) throw new ErrorApp("La cuenta no existe", 404);
+    if (!account) throw new ErrorApp("La cuenta no existe", 404);
 
     return account;
-};
+}
 
 export async function updateAccountServices(accountId, userId, updateData) {
     const { type_account, description } = updateData;
     validateTypeAccount(type_account);
     validateDescription(description);
 
-    const isAccountExisting = await getAccountById(accountId, userId)
-    if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
-    
+    const isAccountExisting = await getAccountById(accountId, userId);
+    if (!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
+
     const affectedRows = await updateAccountById(accountId, userId, {
         type_account,
         description
     });
-    if(affectedRows === 0){
-        return { 
-            message: "No se realizaron cambios (los datos ingresados son idénticos)", 
-            changesApplied: false 
-        }
+    if (affectedRows === 0) {
+        return {
+            message: "No se realizaron cambios (los datos ingresados son idénticos)",
+            changesApplied: false
+        };
     }
-    
+
     return {
-        message: "Cuenta actualizada con exito", 
+        message: "Cuenta actualizada con exito",
         changesApplied: true
-    }
-};
+    };
+}
 
 export async function deleteAccountServices(accountId, userId) {
     const isAccountExisting = await getAccountById(accountId, userId);
-    if(!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
-    
-    const affectedRows =  await deleteAccountById(accountId, userId);
-    if(affectedRows === 0)  throw new ErrorApp("La cuenta no existe", 404);
-    
+    if (!isAccountExisting) throw new ErrorApp("La cuenta no existe", 404);
+
+    const affectedRows = await deleteAccountById(accountId, userId);
+    if (affectedRows === 0) throw new ErrorApp("La cuenta no existe", 404);
+
     return { message: "Cuenta dada de baja correctamente." };
-};
+}
 
 export async function getAccountBalanceServices(accountId, userId) {
     const account = await getAccountByIdServices(accountId, userId);
@@ -74,10 +80,10 @@ export async function getAccountBalanceServices(accountId, userId) {
     const balance = await getAccountBalance(accountId, userId);
     const income = parseFloat(balance.total_income);
     const expense = parseFloat(balance.total_expense);
-    const balanceNeto =  Number((income - expense).toFixed(2));
+    const balanceNeto = Number((income - expense).toFixed(2));
 
     return {
         account,
         balance: balanceNeto
     };
-};
+}

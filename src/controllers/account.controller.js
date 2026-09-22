@@ -1,4 +1,11 @@
-import { createAccountServices, getAccountsServices, getAccountByIdServices, updateAccountServices, deleteAccountServices, getAccountBalanceServices } from "../services/account.services.js";
+import {
+    createAccountServices,
+    getAccountsServices,
+    getAccountByIdServices,
+    updateAccountServices,
+    deleteAccountServices,
+    getAccountBalanceServices
+} from "../services/account.services.js";
 
 export const createAccount = async (req, res) => {
     const userId = req.user.id;
@@ -24,7 +31,7 @@ export const updateAccount = async (req, res) => {
     const userId = req.user.id;
     const result = await updateAccountServices(accountId, userId, req.body);
     res.status(200).json(result);
-}
+};
 
 export const deletedAccount = async (req, res) => {
     const accountId = req.params.id;

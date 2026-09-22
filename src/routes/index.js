@@ -2,7 +2,7 @@ import { Router } from "express";
 import authRoutes from "./auth.routes.js";
 import accountRoutes from "./account.routes.js";
 import categoryRoutes from "./category.routes.js";
-import transactionRoutes from "./transaction.routes.js"
+import transactionRoutes from "./transaction.routes.js";
 import budgetRoutes from "./budget.routes.js";
 
 const router = Router();

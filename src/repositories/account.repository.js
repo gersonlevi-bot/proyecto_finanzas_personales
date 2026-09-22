@@ -28,29 +28,27 @@ export async function getAccountById(accountId, userId) {
         .where("user_id", userId)
         .whereNull("deleted_at")
         .first();
-    
+
     return row;
-};
+}
 
 export async function updateAccountById(accountId, userId, { type_account, description }) {
     const affectedRow = await db("accounts")
         .where("id", accountId)
         .where("user_id", userId)
-        .update({ 
-            type_account, 
+        .update({
+            type_account,
             description
         });
 
     return affectedRow;
-};
+}
 
 export async function deleteAccountById(accountId, userId) {
     const affectedRow = await db("accounts")
         .where("id", accountId)
         .where("user_id", userId)
-        .update({deleted_at: db.fn.now()});
+        .update({ deleted_at: db.fn.now() });
 
     return affectedRow;
-} ;
-
-
+}
