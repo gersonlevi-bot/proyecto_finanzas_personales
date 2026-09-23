@@ -7,6 +7,7 @@ import {
     updateBudgetById
 } from "../repositories/budget.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
+import { translateDbConflict } from "../utils/translateDbConflict.js";
 import { getCategoryByIdServices } from "./category.services.js";
 import { validateAmount, validateBudgetDates } from "../utils/budgetValidators.js";
 
@@ -40,11 +41,7 @@ export async function createBudgetServices(dataBudget, userId) {
                 trx
             );
         } catch (error) {
-            if (error.code === "ER_DUP_ENTRY" || error.errno === 1062)
-                throw new ErrorApp("El presupuesto ya fue registrado por otro proceso", 409);
-
-            console.error("Error en la inserción física:", error);
-            throw error;
+            translateDbConflict(error, "El presupuesto ya fue registrado por otro proceso");
         }
 
         return budget;
@@ -101,10 +98,7 @@ export async function updateBudgetServices(budgetId, userId, dataBudget) {
                 trx
             );
         } catch (error) {
-            if (error.code === "ER_DUP_ENTRY" || error.errno === 1062)
-                throw new ErrorApp("El presupuesto ya fue registrado por otro proceso", 409);
-
-            throw error;
+            translateDbConflict(error, "El presupuesto ya fue registrado por otro proceso");
         }
 
         return affectedRows;

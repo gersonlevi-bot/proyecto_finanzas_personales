@@ -34,7 +34,7 @@ export async function createTransactionServices(dataTransaction, userId) {
     });
 
     return {
-        message: "Transaccion exitosa",
+        message: "Transaccion creada con exito",
         transaction
     };
 }

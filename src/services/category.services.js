@@ -7,6 +7,7 @@ import {
     deletedCategory
 } from "../repositories/category.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
+import { translateDbConflict } from "../utils/translateDbConflict.js";
 import { validateTypeCategory } from "../utils/categoryValidators.js";
 import { validateDescription } from "../utils/accountValidators.js";
 
@@ -30,11 +31,7 @@ export async function createCategoryServices(dataCategory, userId) {
             user_id: userId
         });
     } catch (error) {
-        if (error.code === "ER_DUP_ENTRY" || error.errno === 1062)
-            throw new ErrorApp("La categoría ya fue registrada por otro proceso", 409);
-
-        console.error("Error en la inserción física:", error);
-        throw error;
+        translateDbConflict(error, "La categoría ya fue registrada por otro proceso");
     }
 
     return {
@@ -66,11 +63,18 @@ export async function updateCategoryByIdServices(categoryId, userId, dataCategor
     const foundCategory = await getCategoryById(categoryId, userId);
     if (!foundCategory) throw new ErrorApp("La categoría no existe.", 404);
 
-    const affectedRows = await updateCategoryById(categoryId, userId, {
-        name,
-        description,
-        type_category
-    });
+    let affectedRows;
+
+    try {
+        affectedRows = await updateCategoryById(categoryId, userId, {
+            name,
+            description,
+            type_category
+        });
+    } catch (error) {
+        translateDbConflict(error, "La categoría ya fue registrada por otro proceso");
+    }
+
     if (affectedRows === 0) {
         return {
             message: "No se realizaron cambios (los datos ingresados son idénticos).",

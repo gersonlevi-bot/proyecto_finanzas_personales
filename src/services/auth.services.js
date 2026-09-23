@@ -2,6 +2,7 @@ import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { searchByEmail, saveUser } from "../repositories/user.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
+import { translateDbConflict } from "../utils/translateDbConflict.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,22 +13,16 @@ export async function registerUser(datos) {
 
     const { name, last_name, email, password } = datos;
 
-    if (!name || !last_name || !email || !password) 
+    if (!name || !last_name || !email || !password)
         throw new ErrorApp("Todos los campos son obligatorios", 400);
-    
 
-    if (!emailRegex.test(email)) 
-        throw new ErrorApp("El formato del correo no es válido", 400);
-    
+    if (!emailRegex.test(email)) throw new ErrorApp("El formato del correo no es válido", 400);
 
-    if (!pwdRegex.test(password)) 
+    if (!pwdRegex.test(password))
         throw new ErrorApp("La contraseña no cumple con los requisitos de seguridad", 400);
-    
 
     const foundUser = await searchByEmail(email);
-    if (foundUser) 
-        throw new ErrorApp("El correo electrónico ya está registrado", 409);
-    
+    if (foundUser) throw new ErrorApp("El correo electrónico ya está registrado", 409);
 
     const passwordHasheada = await hash(password, SALT_ROUNDS);
     let id;
@@ -40,12 +35,7 @@ export async function registerUser(datos) {
             password_hash: passwordHasheada
         });
     } catch (error) {
-        if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) 
-            throw new ErrorApp("El correo electrónico ya fue registrado por otro proceso", 409);
-        
-
-        console.error("Error en la inserción física:", error);
-        throw error;
+        translateDbConflict(error, "El correo electrónico ya fue registrado por otro proceso");
     }
 
     return {
