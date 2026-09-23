@@ -4,7 +4,8 @@ import {
     saveBudget,
     getActiveBudgets,
     getBudgetById,
-    updateBudgetById
+    updateBudgetById,
+    deleteBudgetById
 } from "../repositories/budget.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { translateDbConflict } from "../utils/translateDbConflict.js";
@@ -115,4 +116,14 @@ export async function updateBudgetServices(budgetId, userId, dataBudget) {
         message: "Presupuesto actualizado con exito",
         changesApplied: true
     };
+}
+
+export async function deleteBudgetServices(budgetId, userId) {
+    const isBudgetExisting = await getBudgetById(budgetId, userId);
+    if (!isBudgetExisting) throw new ErrorApp("El presupuesto no existe", 404);
+
+    const affectedRows = await deleteBudgetById(budgetId, userId);
+    if (affectedRows === 0) throw new ErrorApp("El presupuesto no existe", 404);
+
+    return { message: "Presupuesto dado de baja correctamente." };
 }

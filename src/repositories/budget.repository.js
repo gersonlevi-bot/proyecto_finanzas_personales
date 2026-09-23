@@ -106,3 +106,13 @@ export async function updateBudgetById(
 
     return affectedRow;
 }
+
+export async function deleteBudgetById(budgetId, userId) {
+    const affectedRow = await db("budgets")
+        .where("id", budgetId)
+        .where("user_id", userId)
+        .whereNull("deleted_at")
+        .update({ deleted_at: db.fn.now() });
+
+    return affectedRow;
+}
