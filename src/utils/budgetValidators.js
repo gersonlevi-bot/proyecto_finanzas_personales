@@ -1,8 +1,16 @@
 import { ErrorApp } from "./ErrorApp.js";
 
 export function validateAmount(amount) {
-    if (typeof amount !== "number" || amount <= 0)
-        throw new ErrorApp("El monto debe ser de tipo número y mayor a 0", 400);
+    const isRealNumber = typeof amount === "number";
+    const isNumericString = typeof amount === "string" && /^-?\d+(\.\d+)?$/.test(amount.trim());
+
+    if (!isRealNumber && !isNumericString)
+        throw new ErrorApp("El monto debe ser un número válido y mayor a 0", 400);
+
+    const parseNumber = Number(amount);
+
+    if (Number.isNaN(parseNumber) || parseNumber <= 0)
+        throw new ErrorApp("El monto debe ser un número válido y mayor a 0", 400);
 }
 
 export function validateBudgetDates(time_start, time_end) {
