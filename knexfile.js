@@ -10,32 +10,33 @@ const baseConnection = {
     user: process.env.DBUSERNAME,
     password: process.env.DBPASSWORD,
     database: process.env.DBNAME,
-    flags: '-FOUND_ROWS'
+    flags: "-FOUND_ROWS",
+    dateStrings: true
 };
 
 export default {
     development: {
         client: "mysql2",
-        connection: baseConnection,
+        connection: baseConnection
     },
     staging: {
         client: "mysql2",
         connection: baseConnection,
         pool: {
             min: 2,
-            max: 10,
+            max: 10
         },
-        migrations: { tableName: "knex_migrations" },
+        migrations: { tableName: "knex_migrations" }
     },
     production: {
         client: "mysql2",
         connection: baseConnection,
         pool: {
             min: 2,
-            max: 10,
+            max: 10
         },
         migrations: {
-            tableName: "knex_migrations",
-        },
+            tableName: "knex_migrations"
+        }
     }
 };
