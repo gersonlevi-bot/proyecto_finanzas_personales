@@ -9,9 +9,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export async function purgeExpiredUsersServices() {
-    let purgeTimeout = parseInt(process.env.PURGE_TIMEOUT, 10);
+    let purgeTimeout = Number(process.env.PURGE_TIMEOUT);
 
-    if (isNaN(purgeTimeout) || purgeTimeout <= 0) {
+    if (Number.isNaN(purgeTimeout) || !Number.isInteger(purgeTimeout) || purgeTimeout <= 0) {
         purgeTimeout = 30;
         console.warn(
             `[Config] PURGE_TIMEOUT corrupta o inválida ("${process.env.PURGE_TIMEOUT}"). Se usará el valor por defecto: ${purgeTimeout}.`
