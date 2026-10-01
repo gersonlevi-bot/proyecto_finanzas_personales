@@ -7,11 +7,14 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 (async () => {
-    await checkConnection();
+    const isDbConnected = await checkConnection();
+    if (!isDbConnected) {
+        console.error("[FATAL] sin conexión a la BD");
+        process.exit(1);
+    }
 
     app.listen(PORT, () => {
         console.log(`Server listening in http://localhost:${PORT}`);
+        startPurgeJob();
     });
-
-    startPurgeJob();
 })();

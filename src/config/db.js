@@ -10,7 +10,11 @@ export async function checkConnection() {
     try {
         await db.raw("SELECT 1");
         console.log(`Data Base started on port ${process.env.DBPORT}`);
+        return true;
     } catch (error) {
-        console.error("Error on connection", error);
+        if (process.env.NODE_ENV === "development") console.error("Error detallado en BD:", error);
+        else console.error(`[FATAL] Fallo de conexión a la BD. Código: ${error.code || "UNKNOWN"}`);
+
+        return false;
     }
 }
