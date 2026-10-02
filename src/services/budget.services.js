@@ -54,9 +54,18 @@ export async function createBudgetServices(dataBudget, userId) {
     };
 }
 
-export async function getActiveBudgetsServices(userId) {
+export async function getActiveBudgetsServices(userId, userTimeZone) {
     const currentDay = new Date();
-    const budgets = await getActiveBudgets(userId, currentDay);
+    const options = {
+        timeZone: userTimeZone,
+        year: "numeric",
+        month: "numeric",
+        day: "numeric"
+    };
+
+    const currentDayFormated = new Intl.DateTimeFormat("en-CA", options).format(currentDay);
+
+    const budgets = await getActiveBudgets(userId, currentDayFormated);
 
     return { budgets };
 }

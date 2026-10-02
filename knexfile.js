@@ -11,20 +11,32 @@ const baseConnection = {
     password: process.env.DBPASSWORD,
     database: process.env.DBNAME,
     flags: "-FOUND_ROWS",
-    dateStrings: true
+    dateStrings: true,
+    timezone: "Z"
+};
+
+const poolConfig = {
+    afterCreate: function (conn, done) {
+        conn.query("SET time_zone = '+00:00';", function (err) {
+            if (err) done(err, conn);
+            else done(null, conn);
+        });
+    }
 };
 
 export default {
     development: {
         client: "mysql2",
-        connection: baseConnection
+        connection: baseConnection,
+        pool: poolConfig
     },
     staging: {
         client: "mysql2",
         connection: baseConnection,
         pool: {
             min: 2,
-            max: 10
+            max: 10,
+            ...poolConfig
         },
         migrations: { tableName: "knex_migrations" }
     },
@@ -33,7 +45,8 @@ export default {
         connection: baseConnection,
         pool: {
             min: 2,
-            max: 10
+            max: 10,
+            ...poolConfig
         },
         migrations: {
             tableName: "knex_migrations"
