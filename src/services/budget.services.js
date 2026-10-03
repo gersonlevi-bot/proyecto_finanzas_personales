@@ -5,12 +5,14 @@ import {
     getActiveBudgets,
     getBudgetById,
     updateBudgetById,
-    deleteBudgetById
+    deleteBudgetById,
+    findBudgetById
 } from "../repositories/budget.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { translateDbConflict } from "../utils/translateDbConflict.js";
 import { getCategoryByIdServices } from "./category.services.js";
 import { validateAmount, validateBudgetDates } from "../utils/budgetValidators.js";
+import { getTimeZoneOffset } from "../utils/getTimeZoneOffset.js";
 
 export async function createBudgetServices(dataBudget, userId) {
     const { amount, time_start, time_end, category_id } = dataBudget;
@@ -54,31 +56,33 @@ export async function createBudgetServices(dataBudget, userId) {
     };
 }
 
-export async function getActiveBudgetsServices(userId, userTimeZone) {
+export async function getActiveBudgetsServices(userId, appTimeZone) {
     const currentDay = new Date();
     const options = {
-        timeZone: userTimeZone,
+        timeZone: appTimeZone,
         year: "numeric",
         month: "numeric",
         day: "numeric"
     };
 
     const currentDayFormated = new Intl.DateTimeFormat("en-CA", options).format(currentDay);
-
-    const budgets = await getActiveBudgets(userId, currentDayFormated);
+    const offset = getTimeZoneOffset(appTimeZone);
+    const budgets = await getActiveBudgets(userId, currentDayFormated, offset);
 
     return { budgets };
 }
 
-export async function getBudgetByIdServices(budgetId, userId) {
-    const budget = await getBudgetById(budgetId, userId);
+export async function getBudgetByIdServices(budgetId, userId, appTimeZone) {
+    const offset = getTimeZoneOffset(appTimeZone);
+    const budget = await getBudgetById(budgetId, userId, offset);
     if (!budget) throw new ErrorApp("El presupuesto no existe", 404);
 
     return budget;
 }
 
 export async function updateBudgetServices(budgetId, userId, dataBudget) {
-    const foundBudget = await getBudgetByIdServices(budgetId, userId);
+    const foundBudget = await findBudgetById(budgetId, userId);
+    if (!foundBudget) throw new ErrorApp("El presupuesto no existe", 404);
     const effectiveData = { ...foundBudget, ...dataBudget };
     const { amount, time_start, time_end, category_id } = effectiveData;
 
@@ -128,7 +132,7 @@ export async function updateBudgetServices(budgetId, userId, dataBudget) {
 }
 
 export async function deleteBudgetServices(budgetId, userId) {
-    const isBudgetExisting = await getBudgetById(budgetId, userId);
+    const isBudgetExisting = await findBudgetById(budgetId, userId);
     if (!isBudgetExisting) throw new ErrorApp("El presupuesto no existe", 404);
 
     const affectedRows = await deleteBudgetById(budgetId, userId);

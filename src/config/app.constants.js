@@ -1,1 +1,1 @@
-export const userTimeZone = "America/Lima";
+export const appTimeZone = "America/Lima";

@@ -35,18 +35,24 @@ export async function saveBudget(
     return insert_id;
 }
 
-function totalSpentByCategory() {
+function totalSpentByCategory(offset) {
     return db("transactions")
         .select(db.raw("COALESCE(SUM(??), 0)", ["amount"]))
         .whereColumn("transactions.category_id", "budgets.category_id")
         .whereColumn("transactions.user_id", "budgets.user_id")
         .where("transactions.type", "=", "expense")
-        .whereColumn("transactions.created_at", ">=", "budgets.time_start")
-        .whereRaw("transactions.created_at < DATE_ADD(budgets.time_end, INTERVAL 1 DAY)")
+        .whereRaw(
+            "transactions.created_at >= CONVERT_TZ(TIMESTAMP(budgets.time_start), ?, '+00:00')",
+            [offset]
+        )
+        .whereRaw(
+            "transactions.created_at < CONVERT_TZ(TIMESTAMP(DATE_ADD(budgets.time_end, INTERVAL 1 DAY)), ?, '+00:00')",
+            [offset]
+        )
         .as("totalSpentByCategory");
 }
 
-export async function getActiveBudgets(userId, currentDay) {
+export async function getActiveBudgets(userId, currentDay, offset) {
     const dataRequired = [
         "id",
         "amount",
@@ -58,7 +64,7 @@ export async function getActiveBudgets(userId, currentDay) {
     ];
 
     const rows = await db("budgets")
-        .select([...dataRequired, totalSpentByCategory()])
+        .select([...dataRequired, totalSpentByCategory(offset)])
         .where("budgets.user_id", userId)
         .whereNull("budgets.deleted_at")
         .where("budgets.time_start", "<=", currentDay)
@@ -67,7 +73,7 @@ export async function getActiveBudgets(userId, currentDay) {
     return rows;
 }
 
-export async function getBudgetById(BudgetId, userId) {
+export async function getBudgetById(budgetId, userId, offset) {
     const dataRequired = [
         "id",
         "amount",
@@ -79,8 +85,8 @@ export async function getBudgetById(BudgetId, userId) {
     ];
 
     const row = await db("budgets")
-        .select([...dataRequired, totalSpentByCategory()])
-        .where("id", BudgetId)
+        .select([...dataRequired, totalSpentByCategory(offset)])
+        .where("id", budgetId)
         .where("user_id", userId)
         .whereNull("deleted_at")
         .first();
@@ -115,4 +121,25 @@ export async function deleteBudgetById(budgetId, userId) {
         .update({ deleted_at: db.fn.now() });
 
     return affectedRow;
+}
+
+export async function findBudgetById(budgetId, userId) {
+    const dataRequired = [
+        "id",
+        "amount",
+        "time_start",
+        "time_end",
+        "created_at",
+        "updated_at",
+        "category_id"
+    ];
+
+    const row = await db("budgets")
+        .select(dataRequired)
+        .where("id", budgetId)
+        .where("user_id", userId)
+        .whereNull("deleted_at")
+        .first();
+
+    return row;
 }

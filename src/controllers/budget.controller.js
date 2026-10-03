@@ -6,7 +6,7 @@ import {
     deleteBudgetServices
 } from "../services/budget.services.js";
 
-import { userTimeZone } from "../config/app.constants.js";
+import { appTimeZone } from "../config/app.constants.js";
 
 export const createBudget = async (req, res) => {
     const userId = req.user.id;
@@ -16,14 +16,14 @@ export const createBudget = async (req, res) => {
 
 export const getBudgets = async (req, res) => {
     const userId = req.user.id;
-    const result = await getActiveBudgetsServices(userId, userTimeZone);
+    const result = await getActiveBudgetsServices(userId, appTimeZone);
     res.status(200).json(result);
 };
 
 export const getBudget = async (req, res) => {
     const budgetId = req.params.id;
     const userId = req.user.id;
-    const result = await getBudgetByIdServices(budgetId, userId);
+    const result = await getBudgetByIdServices(budgetId, userId, appTimeZone);
     res.status(200).json(result);
 };
 
