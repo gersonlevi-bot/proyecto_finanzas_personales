@@ -3,11 +3,13 @@ import jwt from "jsonwebtoken";
 import { searchByEmail, saveUser } from "../repositories/user.repository.js";
 import { ErrorApp } from "../utils/ErrorApp.js";
 import { translateDbConflict } from "../utils/translateDbConflict.js";
+import { validSaltRounds } from "../config/security.js";
+import { getDummyHash } from "../config/security.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 export async function registerUser(datos) {
-    const SALT_ROUNDS = 12;
+    const SALT_ROUNDS = validSaltRounds;
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const pwdRegex = /^(?=.*[a-z])(?=(.*[A-Z]))(?=.*\d)(?=.*[\W_]).{8,32}$/;
 
@@ -45,7 +47,7 @@ export async function registerUser(datos) {
 }
 
 export async function loginServices(dataLogin) {
-    const dummyHash = "2b$12$dJYlUqbcG8ypyYZ8zLN5kO9UfEbq6/aJEXkHP9t8qUF24LuKA0hBK";
+    const dummyHash = getDummyHash();
     const { email, password } = dataLogin;
 
     const user = await searchByEmail(email);
